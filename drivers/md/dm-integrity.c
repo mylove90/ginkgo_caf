@@ -2447,7 +2447,9 @@ static struct scatterlist **dm_integrity_alloc_journal_scatterlist(struct dm_int
 	struct scatterlist **sl;
 	unsigned i;
 
-	sl = kvmalloc(ic->journal_sections * sizeof(struct scatterlist *), GFP_KERNEL | __GFP_ZERO);
+	sl = kvmalloc_array(ic->journal_sections,
+			    sizeof(struct scatterlist *),
+			    GFP_KERNEL | __GFP_ZERO);
 	if (!sl)
 		return NULL;
 
@@ -2463,7 +2465,8 @@ static struct scatterlist **dm_integrity_alloc_journal_scatterlist(struct dm_int
 
 		n_pages = (end_index - start_index + 1);
 
-		s = kvmalloc(n_pages * sizeof(struct scatterlist), GFP_KERNEL);
+		s = kvmalloc_array(n_pages, sizeof(struct scatterlist),
+				   GFP_KERNEL);
 		if (!s) {
 			dm_integrity_free_journal_scatterlist(ic, sl);
 			return NULL;
@@ -2642,7 +2645,9 @@ static int create_journal(struct dm_integrity_c *ic, char **error)
 				goto bad;
 			}
 
-			sg = kvmalloc((ic->journal_pages + 1) * sizeof(struct scatterlist), GFP_KERNEL);
+			sg = kvmalloc_array(ic->journal_pages + 1,
+					    sizeof(struct scatterlist),
+					    GFP_KERNEL);
 			if (!sg) {
 				*error = "Unable to allocate sg list";
 				r = -ENOMEM;
@@ -2708,7 +2713,9 @@ static int create_journal(struct dm_integrity_c *ic, char **error)
 				r = -ENOMEM;
 				goto bad;
 			}
-			ic->sk_requests = kvmalloc(ic->journal_sections * sizeof(struct skcipher_request *), GFP_KERNEL | __GFP_ZERO);
+			ic->sk_requests = kvmalloc_array(ic->journal_sections,
+							 sizeof(struct skcipher_request *),
+							 GFP_KERNEL | __GFP_ZERO);
 			if (!ic->sk_requests) {
 				*error = "Unable to allocate sk requests";
 				r = -ENOMEM;
