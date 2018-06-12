@@ -309,7 +309,7 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
 		return ret;
 	}
 
-	addr = devm_kzalloc(dev, sizeof(phys_addr_t) * ep->num_ob_windows,
+	addr = devm_kcalloc(dev, ep->num_ob_windows, sizeof(phys_addr_t),
 			    GFP_KERNEL);
 	if (!addr)
 		return -ENOMEM;
