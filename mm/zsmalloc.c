@@ -462,6 +462,7 @@ static struct zpool_driver zs_zpool_driver = {
 	.create =	zs_zpool_create,
 	.destroy =	zs_zpool_destroy,
 	.malloc =	zs_zpool_malloc,
+	.malloc_support_movable = true,
 	.free =		zs_zpool_free,
 	.shrink =	zs_zpool_shrink,
 	.map =		zs_zpool_map,
@@ -469,6 +470,7 @@ static struct zpool_driver zs_zpool_driver = {
 	.total_size =	zs_zpool_total_size,
 	.compact =	zs_zpool_compact,
 	.get_num_compacted =	zs_zpool_get_compacted,
+	.total_size =		  zs_zpool_total_size,
 };
 
 MODULE_ALIAS("zpool-zsmalloc");
