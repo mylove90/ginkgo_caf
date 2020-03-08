@@ -7390,7 +7390,6 @@ struct find_best_target_env {
 	int placement_boost;
 	bool need_idle;
 	int fastpath;
-	int skip_cpu;
 };
 
 static bool is_packing_eligible(struct task_struct *p, int target_cpu,
@@ -7569,9 +7568,6 @@ static inline int find_best_target(struct task_struct *p, int *backup_cpu,
 				continue;
 
 			if (sched_cpu_high_irqload(i))
-				continue;
-
-			if (fbt_env->skip_cpu == i)
 				continue;
 
 			/*
@@ -8164,21 +8160,10 @@ static inline struct cpumask *find_rtg_target(struct task_struct *p)
 
 	return rtg_target;
 }
-
-static inline bool is_many_wakeup(int sibling_count_hint)
-{
-	return sibling_count_hint >= sysctl_sched_many_wakeup_threshold;
-}
-
 #else
 static inline struct cpumask *find_rtg_target(struct task_struct *p)
 {
 	return NULL;
-}
-
-static inline bool is_many_wakeup(int sibling_count_hint)
-{
-	return false;
 }
 #endif
 
@@ -8273,8 +8258,6 @@ static int find_energy_efficient_cpu(struct sched_domain *sd,
 		fbt_env.rtg_target = rtg_target;
 		fbt_env.placement_boost = placement_boost;
 		fbt_env.need_idle = need_idle;
-		fbt_env.skip_cpu = is_many_wakeup(sibling_count_hint) ?
-				   cpu : -1;
 
 		/* Find a cpu with sufficient capacity */
 		target_cpu = find_best_target(p, &eenv->cpu[EAS_CPU_BKP].cpu_id,
