@@ -1518,9 +1518,7 @@ void ol_rx_peer_init(struct ol_txrx_pdev_t *pdev, struct ol_txrx_peer_t *peer)
 	peer->keyinstalled = 0;
 
 	peer->last_assoc_rcvd = 0;
-	peer->last_disassoc_rcvd = 0;
-	peer->last_deauth_rcvd = 0;
-
+	peer->last_disassoc_deauth_rcvd = 0;
 	qdf_atomic_init(&peer->fw_pn_check);
 }
 
@@ -1529,8 +1527,7 @@ ol_rx_peer_cleanup(struct ol_txrx_vdev_t *vdev, struct ol_txrx_peer_t *peer)
 {
 	peer->keyinstalled = 0;
 	peer->last_assoc_rcvd = 0;
-	peer->last_disassoc_rcvd = 0;
-	peer->last_deauth_rcvd = 0;
+	peer->last_disassoc_deauth_rcvd = 0;
 	ol_rx_reorder_peer_cleanup(vdev, peer);
 }
 

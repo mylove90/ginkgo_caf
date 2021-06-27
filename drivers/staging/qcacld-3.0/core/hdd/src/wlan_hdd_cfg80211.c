@@ -3011,14 +3011,18 @@ __wlan_hdd_cfg80211_get_supported_features(struct wiphy *wiphy,
 	}
 #endif
 	if (wlan_hdd_nan_is_supported(hdd_ctx)) {
-		hdd_debug("NAN is supported by firmware");
-		fset |= WIFI_FEATURE_NAN;
+		//not support wifi aware by liuqi on 29/08 2019
+		//hdd_debug("NAN is supported by firmware");
+		//fset |= WIFI_FEATURE_NAN;
+		//remove ended
 	}
 	if (sme_is_feature_supported_by_fw(RTT) &&
 	    hdd_ctx->config->enable_rtt_support) {
-		hdd_debug("RTT is supported by firmware and framework");
-		fset |= WIFI_FEATURE_D2D_RTT;
-		fset |= WIFI_FEATURE_D2AP_RTT;
+		//not support wifi RTT by wangjun on 17/04 2020
+		//hdd_debug("RTT is supported by firmware and framework");
+		//fset |= WIFI_FEATURE_D2D_RTT;
+		//fset |= WIFI_FEATURE_D2AP_RTT;
+		//remove ended
 	}
 #ifdef FEATURE_WLAN_SCAN_PNO
 	if (hdd_ctx->config->configPNOScanSupport &&
@@ -6795,6 +6799,7 @@ void wlan_hdd_save_gtk_offload_params(struct hdd_adapter *adapter,
 			QDF_ASSERT(0);
 		}
 		qdf_mem_copy(gtk_req->kck, kck_ptr, kck_len);
+                gtk_req->kck_len =kck_len;
 	}
 
 	if (kek_ptr) {
@@ -22921,6 +22926,7 @@ int __wlan_hdd_cfg80211_set_rekey_data(struct wiphy *wiphy,
 
 	wlan_hdd_copy_gtk_kek(gtk_req, data);
 	qdf_mem_copy(gtk_req->kck, data->kck, NL80211_KCK_LEN);
+        gtk_req->kck_len = NL80211_KCK_LEN;
 	gtk_req->is_fils_connection = hdd_is_fils_connection(adapter);
 	status = pmo_ucfg_cache_gtk_offload_req(adapter->vdev, gtk_req);
 	if (status != QDF_STATUS_SUCCESS) {
