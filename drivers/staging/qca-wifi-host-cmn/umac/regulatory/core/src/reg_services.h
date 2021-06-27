@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2017-2019, 2021 The Linux Foundation. All rights reserved.
  *
  *
  * Permission to use, copy, modify, and/or distribute this software for
@@ -157,15 +157,27 @@ QDF_STATUS reg_set_band(struct wlan_objmgr_pdev *pdev, enum band_info band);
  */
 QDF_STATUS reg_get_band(struct wlan_objmgr_pdev *pdev, enum band_info *band);
 
+#ifdef DISABLE_CHANNEL_LIST
 /**
- * reg_restore_cached_channels() - Cache the current state of the channles
+ * reg_disable_cached_channels() - Disable cached channels
  * @pdev: The physical dev to cache the channels for
  */
-#ifdef DISABLE_CHANNEL_LIST
+QDF_STATUS reg_disable_cached_channels(struct wlan_objmgr_pdev *pdev);
+
+/**
+ *  reg_restore_cached_channels() - Restore disabled cached channels
+ * @pdev: The physical dev to cache the channels for
+ */
 QDF_STATUS reg_restore_cached_channels(struct wlan_objmgr_pdev *pdev);
 #else
 static inline
 QDF_STATUS reg_restore_cached_channels(struct wlan_objmgr_pdev *pdev)
+{
+	return QDF_STATUS_SUCCESS;
+}
+
+static inline
+QDF_STATUS reg_disable_cached_channels(struct wlan_objmgr_pdev *pdev)
 {
 	return QDF_STATUS_SUCCESS;
 }
@@ -413,7 +425,8 @@ static inline bool reg_is_etsi13_regdmn(struct wlan_objmgr_pdev *pdev)
 }
 
 static inline bool
-reg_is_etsi13_srd_chan_allowed_master_mode(struct wlan_objmgr_pdev *pdev)
+reg_is_etsi13_srd_chan_allowed_master_mode(struct wlan_objmgr_pdev *pdev,
+					   enum QDF_OPMODE vdev_opmode)
 {
 	return true;
 }
@@ -437,13 +450,15 @@ bool reg_is_etsi13_srd_chan(struct wlan_objmgr_pdev *pdev, uint32_t chan);
 
 /**
  * reg_is_etsi13_srd_chan_allowed_master_mode() - Checks if regdmn is ETSI13
- * and SRD channels are allowed in master mode or not.
+ * and SRD channels are allowed in master mode or not for particular vdev
  *
  * @pdev: pdev ptr
+ * @vdev_opmode: vdev opmode
  *
  * Return: true or false
  */
-bool reg_is_etsi13_srd_chan_allowed_master_mode(struct wlan_objmgr_pdev *pdev);
+bool reg_is_etsi13_srd_chan_allowed_master_mode(struct wlan_objmgr_pdev *pdev,
+						enum QDF_OPMODE vdev_opmode);
 
 static inline bool reg_is_dsrc_chan(struct wlan_objmgr_pdev *pdev,
 				    uint32_t chan)
@@ -460,6 +475,16 @@ bool reg_is_disable_ch(struct wlan_objmgr_pdev *pdev, uint32_t chan);
 uint32_t reg_freq_to_chan(struct wlan_objmgr_pdev *pdev, uint32_t freq);
 
 uint32_t reg_chan_to_freq(struct wlan_objmgr_pdev *pdev, uint32_t chan_num);
+
+/**
+ * reg_legacy_chan_to_freq() - Get freq from chan noumber, for 2G and 5G
+ * @pdev: Pointer to pdev
+ * @chan_num: Channel number
+ *
+ * Return: Channel frequency if success, otherwise 0
+ */
+uint16_t reg_legacy_chan_to_freq(struct wlan_objmgr_pdev *pdev,
+				 uint8_t chan_num);
 
 /**
  * reg_chan_is_49ghz() - Check if the input channel number is 4.9GHz
