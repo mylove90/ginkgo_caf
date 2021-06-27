@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /*
- * Copyright (c) 2012-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2020, The Linux Foundation. All rights reserved.
  */
 
 
@@ -849,6 +849,7 @@ struct audproc_softvolume_params {
  */
 #define AUDPROC_MODULE_ID_MFC_EC_REF                        0x0001092C
 
+#define PARAM_ID_FFV_SPF_FREEZE                             0x00010960
 
 struct adm_cmd_set_pp_params_v5 {
 	struct apr_hdr hdr;
@@ -1384,7 +1385,7 @@ struct adm_cmd_connect_afe_port_v5 {
 #define AFE_PORT_ID_SLIMBUS_RANGE_SIZE	0xA
 
 /* Size of the range of port IDs for real-time proxy ports. */
-#define  AFE_PORT_ID_RT_PROXY_PORT_RANGE_SIZE	0x2
+#define  AFE_PORT_ID_RT_PROXY_PORT_RANGE_SIZE	0x4
 
 /* Size of the range of port IDs for pseudoports. */
 #define AFE_PORT_ID_PSEUDOPORT_RANGE_SIZE	0x5
@@ -1662,6 +1663,16 @@ struct adm_cmd_connect_afe_port_v5 {
  */
 #define AFE_PORT_ID_VOICE2_PLAYBACK_TX  0x8002
 #define AFE_PORT_ID_VOICE_PLAYBACK_TX   0x8005
+
+/*
+ * Proxyport used for voice call data processing.
+ * In cases like call-screening feature, where user can communicate
+ * with caller with the help of "call screen" mode, and without
+ * connecting the call with any HW input/output devices in the phon,
+ * voice call can use Pseudo port to start voice data processing.
+ */
+#define RT_PROXY_PORT_002_TX  0x2003
+#define RT_PROXY_PORT_002_RX  0x2002
 
 #define AFE_PORT_ID_PRIMARY_TDM_RX \
 	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x00)
@@ -4122,6 +4133,20 @@ struct afe_id_aptx_adaptive_enc_init
 #define AFE_MODULE_ID_DEPACKETIZER_COP        0x00013233
 #define AFE_MODULE_ID_DEPACKETIZER_COP_V1     0x000132E9
 
+/* Macros for dynamic loading of modules by AVCS */
+
+#define AVS_MODULE_ID_PACKETIZER_COP        0x0001322A
+
+#define AVS_MODULE_ID_PACKETIZER_COP_V1     0x000132E8
+
+#define AVS_MODULE_ID_PACKETIZER_COP_V2     0x000132F9
+
+#define AVS_MODULE_ID_DEPACKETIZER_COP      0x00013233
+
+#define AVS_MODULE_ID_DEPACKETIZER_COP_V1   0x000132E9
+
+#define AVS_MODULE_ID_DEPACKETIZER_COP_V2   0x000132FC
+
 /*
  * Depacketizer type parameter for the #AVS_MODULE_ID_DECODER module.
  * This parameter cannot be set runtime.
@@ -4351,6 +4376,11 @@ struct asm_aac_enc_cfg_t {
 
 /* FMT ID for apt-X Adaptive speech */
 #define ASM_MEDIA_FMT_APTX_AD_SPEECH 0x00013208
+
+/* FMT ID for lc3 codec */
+#define ASM_MEDIA_FMT_LC3 0x0001337E
+
+#define ENC_CODEC_TYPE_LC3 0x2B000000
 
 #define PCM_CHANNEL_L         1
 #define PCM_CHANNEL_R         2
